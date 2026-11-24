@@ -105,6 +105,18 @@ def test_state_caption_and_channels():
     assert config.normalize_channel("https://t.me/s/cnbuysheets?before=3") == "cnbuysheets"
 
 
+def test_users_approval():
+    conn = make_conn()
+    assert db.user_status(conn, 42) is None
+    db.set_user_status(conn, 42, "pending", "Ana (@ana)")
+    assert db.user_status(conn, 42) == "pending"
+    db.set_user_status(conn, 42, "approved")  # conserva el nombre
+    assert db.user_status(conn, 42) == "approved"
+    assert [(r["user_id"], r["name"]) for r in db.list_users(conn)] == [(42, "Ana (@ana)")]
+    db.set_user_status(conn, 42, "denied")
+    assert db.list_users(conn) == [] and db.user_status(conn, 42) == "denied"
+
+
 def test_threads_use_own_connection():
     from concurrent.futures import ThreadPoolExecutor
 

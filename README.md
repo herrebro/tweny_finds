@@ -12,10 +12,17 @@ Bot de Telegram privado: le escribes un nombre o le mandas una foto y te devuelv
 | Variable | Obligatoria | Qué es |
 |---|---|---|
 | `BOT_TOKEN` | sí | El token que te dio @BotFather |
-| `ALLOWED_USERS` | sí (tras el primer arranque) | Tu id de Telegram. Si está vacía, el bot te dice cuál es cuando le escribes |
+| `ALLOWED_USERS` | sí (tras el primer arranque) | Tu id de Telegram (el dueño). Si está vacía, el bot te dice cuál es cuando le escribes |
 | `DATA_DIR` | ya viene en el Dockerfile (`/data`) | Carpeta donde se guardan base de datos, fotos y modelo. **Debe ser un volumen persistente** |
 | `CHANNELS` | no | Canales separados por comas. Si no existe, se usa `channels.txt` |
 | `SCRAPE_INTERVAL_MIN` | no | Minutos entre lecturas (por defecto 30) |
+
+## Quién puede usarlo
+
+- Tú (el id de `ALLOWED_USERS`) siempre puedes, y eres quien aprueba a los demás.
+- Si otra persona le escribe al bot, queda pendiente y te llega un aviso con los botones **Aprobar** / **Rechazar**.
+  Si la rechazas, el bot la ignora en silencio. Los aprobados se guardan en la base de datos: no hay que tocar nada más.
+- `/usuarios` lista a los aprobados y `/quitar <id>` le quita el acceso a alguien. `/estado` es solo para ti.
 
 ## Despliegue en Railway (todo desde el navegador)
 

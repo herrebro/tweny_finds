@@ -29,6 +29,11 @@ CREATE TABLE IF NOT EXISTS state(
     channel TEXT PRIMARY KEY,
     last_id INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS users(
+    user_id INTEGER PRIMARY KEY,
+    name TEXT,
+    status TEXT NOT NULL  -- pending | approved | denied
+);
 """
 
 
@@ -108,6 +113,24 @@ def load_matrix(conn):
     ids = np.array([r["item_id"] for r in rows], dtype=np.int64)
     mat = np.vstack([np.frombuffer(r["vec"], dtype=np.float32) for r in rows])
     return ids, mat
+
+
+def user_status(conn, user_id: int):
+    row = conn.execute("SELECT status FROM users WHERE user_id=?", (user_id,)).fetchone()
+    return row["status"] if row else None
+
+
+def set_user_status(conn, user_id: int, status: str, name: str | None = None) -> None:
+    conn.execute(
+        "INSERT INTO users(user_id, name, status) VALUES(?,?,?) "
+        "ON CONFLICT(user_id) DO UPDATE SET status=excluded.status, name=COALESCE(excluded.name, users.name)",
+        (user_id, name, status),
+    )
+    conn.commit()
+
+
+def list_users(conn, status: str = "approved") -> list[sqlite3.Row]:
+    return conn.execute("SELECT user_id, name FROM users WHERE status=? ORDER BY name", (status,)).fetchall()
 
 
 def stats(conn) -> dict:
