@@ -1,0 +1,6 @@
+# Un canal público por línea (enlace t.me/... o @usuario). Las líneas con # se ignoran.
+# Si defines la variable CHANNELS en el servidor, se usa esa en vez de este archivo.
+https://t.me/pandabuyfind
+https://t.me/Universalfind
+https://t.me/cnbuysheets
+https://t.me/bladefindss
